@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI QA Agent</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      width: 450px;
+      min-height: 500px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    
+    h1 {
+      color: #667eea;
+      font-size: 24px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #666;
+      font-size: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .input-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    
+    textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+      transition: border-color 0.3s;
+    }
+    
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    button {
+      flex: 1;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+    }
+    
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+    
+    .btn-capture {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+    }
+    
+    .btn-capture:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+    }
+    
+    #response {
+      margin-top: 15px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #667eea;
+      max-height: 300px;
+      overflow-y: auto;
+      display: none;
+    }
+    
+    #response.show {
+      display: block;
+    }
+    
+    .response-header {
+      font-weight: 600;
+      color: #667eea;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .response-content {
+      color: #333;
+      line-height: 1.6;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+    
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .loading.show {
+      display: block;
+    }
+    
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #e0e0e0;
+    }
+    
+    .stat {
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 20px;
+      font-weight: bold;
+      color: #667eea;
+    }
+    
+    .stat-label {
+      font-size: 11px;
+      color: #666;
+      margin-top: 3px;
+    }
+    
+    .error {
+      background: #fee;
+      border-left-color: #f44;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 600;
+      background: #667eea;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🤖 AI QA Agent</h1>
+    <div class="subtitle">Powered by Agentic Architecture</div>
+    
+    <div class="input-group">
+      <label for="question">Ask Your Question:</label>
+      <textarea 
+        id="question" 
+        rows="4" 
+        placeholder="E.g., What is quantum computing?"></textarea>
+    </div>
+    
+    <!-- Preference Collection Section (Hidden initially) -->
+    <div id="preferencesSection" style="display: none; margin-bottom: 15px; padding: 15px; background: #f0f7ff; border-radius: 8px; border: 2px solid #667eea;">
+      <h3 style="color: #667eea; font-size: 16px; margin-bottom: 12px;">🎯 Personalize Your Answer</h3>
+      
+      <div style="margin-bottom: 10px;">
+        <label style="font-size: 12px; margin-bottom: 4px;">Expertise Level:</label>
+        <select id="expertiseLevel" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ddd;">
+          <option value="beginner">Beginner - Simple explanations</option>
+          <option value="intermediate" selected>Intermediate - Balanced</option>
+          <option value="expert">Expert - Technical details</option>
+        </select>
+      </div>
+      
+      <div style="margin-bottom: 10px;">
+        <label style="font-size: 12px; margin-bottom: 4px;">Response Style:</label>
+        <select id="responseStyle" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ddd;">
+          <option value="concise">Concise - Brief & to-the-point</option>
+          <option value="balanced" selected>Balanced - Clear with details</option>
+          <option value="detailed">Detailed - Comprehensive</option>
+        </select>
+      </div>
+      
+      <div style="margin-bottom: 10px;">
+        <label style="font-size: 12px; margin-bottom: 4px;">Depth Preference:</label>
+        <select id="depthPreference" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ddd;">
+          <option value="shallow">Shallow - High-level overview</option>
+          <option value="moderate" selected>Moderate - Main concepts</option>
+          <option value="deep">Deep - Underlying mechanisms</option>
+        </select>
+      </div>
+      
+      <div style="margin-bottom: 10px;">
+        <label style="font-size: 12px; margin-bottom: 4px;">Time Sensitivity:</label>
+        <select id="timeSensitivity" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ddd;">
+          <option value="low">Low - Established knowledge is fine</option>
+          <option value="moderate" selected>Moderate - Recent is preferred</option>
+          <option value="high">High - Need latest information</option>
+        </select>
+      </div>
+      
+      <div style="display: flex; gap: 8px; margin-top: 12px;">
+        <button id="confirmPrefsBtn" class="btn-primary" style="flex: 1;">✓ Use These Preferences</button>
+        <button id="skipPrefsBtn" class="btn-secondary" style="flex: 1;">Skip</button>
+      </div>
+    </div>
+    
+    <div class="btn-group">
+      <button id="askBtn" class="btn-primary">🚀 Ask</button>
+      <button id="captureBtn" class="btn-capture">📸 Capture Page</button>
+    </div>
+    
+    <div class="btn-group">
+      <button id="clearBtn" class="btn-secondary">🗑️ Clear</button>
+      <button id="memoryBtn" class="btn-secondary">💾 Memory</button>
+    </div>
+    
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <div style="color: #667eea; font-weight: 600;">Processing your query...</div>
+    </div>
+    
+    <div id="response">
+      <div class="response-header">
+        <span>📋 Response</span>
+        <span class="badge" id="methodBadge">RAG</span>
+      </div>
+      <div class="response-content" id="responseContent"></div>
+    </div>
+    
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-value" id="questionsCount">0</div>
+        <div class="stat-label">Questions</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="docsCount">0</div>
+        <div class="stat-label">Documents</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="accuracyScore">100%</div>
+        <div class="stat-label">Accuracy</div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
+

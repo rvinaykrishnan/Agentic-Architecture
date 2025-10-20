@@ -1,0 +1,31 @@
+================================================================================
+        HOW TO LOAD CHROME EXTENSION - 5 SIMPLE STEPS
+================================================================================
+
+STEP 1: Open Chrome and type:  chrome://extensions/
+
+STEP 2: Turn ON "Developer mode" (toggle in top-right corner)
+
+STEP 3: Click "Load unpacked" button
+
+STEP 4: Navigate to and select this folder:
+        /Users/vinay/Documents/2 - AI - EAG V2/Class 06 - Agentic Architecture/Session 6/LLM_Improved-System-Prompt/qa_agent_plugin/chrome_extension
+
+        TIP: Press Cmd+Shift+G (Mac) to paste path directly
+
+STEP 5: Extension loaded! Click the icon in Chrome toolbar
+
+================================================================================
+                            HOW TO USE
+================================================================================
+
+1. Click the QA Agent extension icon
+2. Type your question (e.g., "How does photosynthesis work?")
+3. Click "Ask"  
+4. Preference form appears - select your preferences
+5. Click "Use These Preferences"
+6. See your personalized answer!
+
+Every query creates a log file in: backend/logs/
+
+================================================================================
